@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Send, Paperclip, X } from 'lucide-react';
+import { Send, Paperclip, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Attachment } from '@/types';
@@ -14,8 +14,9 @@ interface ChatInputProps {
 export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [uploadingFiles, setUploadingFiles] = useState<string[]>([]); // Track which files are uploading
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null); // ✅ Reference to hidden file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,38 +38,130 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
     }
   };
 
-  // ✅ Direct file upload handler
+  // Direct file upload handler
   const handleAttachmentClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click(); // Trigger file picker directly
+      fileInputRef.current.click();
     }
   };
 
-  // ✅ Handle file selection
+  // Upload files to Cloudinary
+  const uploadFilesToCloudinary = async (files: File[]) => {
+    const formData = new FormData();
+    
+    // Add all files to form data
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Error uploading to Cloudinary:', error);
+      throw error;
+    }
+  };
+
+  // Handle file selection and upload
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const newAttachments: Attachment[] = [];
+    const filesArray = Array.from(files);
+    
+    // Create temporary attachments with loading state
+    const tempAttachments: Attachment[] = filesArray.map(file => ({
+      id: crypto.randomUUID(),
+      name: file.name,
+      size: file.size,
+      type: file.type.startsWith('image/') ? 'image' : 'file',
+      url: '', // Will be populated after upload
+      file: file,
+      uploading: true, // Add uploading state
+    }));
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+    // Add temporary attachments to state
+    setAttachments(prev => [...prev, ...tempAttachments]);
+    
+    // Track uploading files
+    const uploadingIds = tempAttachments.map(att => att.id);
+    setUploadingFiles(prev => [...prev, ...uploadingIds]);
+
+    try {
+      // Upload to Cloudinary
+      console.log('Uploading files to Cloudinary...');
+      const uploadResult = await uploadFilesToCloudinary(filesArray);
       
-      // Create attachment object
-      const attachment: Attachment = {
-        id: crypto.randomUUID(),
-        name: file.name,
-        size: file.size,
-        type: file.type.startsWith('image/') ? 'image' : 'file',
-        url: URL.createObjectURL(file), // Create temporary URL for preview
-        file: file, // Store the actual file object if needed
-      };
+      console.log('Upload result:', uploadResult);
 
-      newAttachments.push(attachment);
+      // Update attachments with Cloudinary URLs
+      setAttachments(prev => {
+        return prev.map(attachment => {
+          if (uploadingIds.includes(attachment.id)) {
+            // Find corresponding successful upload
+            const successfulUpload = uploadResult.successful.find(
+              (upload: any) => upload.originalName === attachment.name
+            );
+            
+            if (successfulUpload) {
+              return {
+                ...attachment,
+                url: successfulUpload.cloudinaryUrl,
+                uploading: false,
+              };
+            } else {
+              // Handle failed upload
+              console.error(`Failed to upload ${attachment.name}`);
+              return {
+                ...attachment,
+                uploading: false,
+                uploadFailed: true,
+              };
+            }
+          }
+          return attachment;
+        });
+      });
+
+      // Remove from uploading list
+      setUploadingFiles(prev => prev.filter(id => !uploadingIds.includes(id)));
+
+      // Show success message if there were failed uploads
+      if (uploadResult.failed && uploadResult.failed.length > 0) {
+        console.warn('Some files failed to upload:', uploadResult.failed);
+        // You could show a toast notification here
+      }
+
+    } catch (error) {
+      console.error('Upload error:', error);
+      
+      // Mark all uploads as failed
+      setAttachments(prev => {
+        return prev.map(attachment => {
+          if (uploadingIds.includes(attachment.id)) {
+            return {
+              ...attachment,
+              uploading: false,
+              uploadFailed: true,
+            };
+          }
+          return attachment;
+        });
+      });
+      
+      setUploadingFiles(prev => prev.filter(id => !uploadingIds.includes(id)));
     }
 
-    setAttachments([...attachments, ...newAttachments]);
-    
     // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -76,16 +169,17 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
   };
 
   const removeAttachment = (attachmentId: string) => {
-    // Clean up object URLs to prevent memory leaks
+    // Clean up object URLs to prevent memory leaks (if any local URLs exist)
     const attachmentToRemove = attachments.find(a => a.id === attachmentId);
-    if (attachmentToRemove?.url) {
+    if (attachmentToRemove?.url && attachmentToRemove.url.startsWith('blob:')) {
       URL.revokeObjectURL(attachmentToRemove.url);
     }
     
     setAttachments(attachments.filter(a => a.id !== attachmentId));
+    setUploadingFiles(prev => prev.filter(id => id !== attachmentId));
   };
 
-  // ✅ Helper function to format file size
+  // Helper function to format file size
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -96,17 +190,31 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
 
   return (
     <div className="relative">
-      {/* ✅ Attachments preview */}
+      {/* Attachments preview */}
       {attachments.length > 0 && (
         <div className="mb-3 flex flex-wrap gap-2">
           {attachments.map((attachment) => (
             <div
               key={attachment.id}
-              className="flex items-center bg-gray-700 rounded-lg px-3 py-2 text-sm group hover:bg-gray-600 transition-colors"
+              className={`flex items-center rounded-lg px-3 py-2 text-sm group transition-colors ${
+                attachment.uploading 
+                  ? 'bg-blue-700/50 border border-blue-500' 
+                  : attachment.uploadFailed
+                  ? 'bg-red-700/50 border border-red-500'
+                  : 'bg-gray-700 hover:bg-gray-600'
+              }`}
             >
               {/* File icon based on type */}
               <div className="flex items-center space-x-2">
-                {attachment.type === 'image' ? (
+                {attachment.uploading ? (
+                  <div className="w-6 h-6 flex items-center justify-center">
+                    <Loader2 size={16} className="animate-spin text-blue-400" />
+                  </div>
+                ) : attachment.uploadFailed ? (
+                  <div className="w-6 h-6 bg-red-600 rounded flex items-center justify-center">
+                    <span className="text-xs font-bold text-white">!</span>
+                  </div>
+                ) : attachment.type === 'image' ? (
                   <div className="w-6 h-6 bg-green-600 rounded flex items-center justify-center">
                     <span className="text-xs font-bold text-white">IMG</span>
                   </div>
@@ -117,11 +225,22 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
                 )}
                 
                 <div className="flex flex-col">
-                  <span className="text-gray-300 truncate max-w-[200px] text-xs">
+                  <span className={`truncate max-w-[200px] text-xs ${
+                    attachment.uploading 
+                      ? 'text-blue-300' 
+                      : attachment.uploadFailed
+                      ? 'text-red-300'
+                      : 'text-gray-300'
+                  }`}>
                     {attachment.name}
                   </span>
                   <span className="text-gray-500 text-xs">
-                    {formatFileSize(attachment.size)}
+                    {attachment.uploading 
+                      ? 'Uploading...' 
+                      : attachment.uploadFailed
+                      ? 'Upload failed'
+                      : formatFileSize(attachment.size)
+                    }
                   </span>
                 </div>
               </div>
@@ -132,6 +251,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
                 variant="ghost"
                 onClick={() => removeAttachment(attachment.id)}
                 className="ml-2 p-1 h-6 w-6 text-gray-400 hover:text-white hover:bg-gray-600"
+                disabled={attachment.uploading}
               >
                 <X size={12} />
               </Button>
@@ -140,12 +260,12 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
         </div>
       )}
 
-      {/* ✅ Hidden file input */}
+      {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
         multiple
-        accept="image/*,.pdf,.doc,.docx,.txt,.json,.csv" // Specify allowed file types
+        accept="image/*,.pdf,.doc,.docx,.txt,.json,.csv"
         onChange={handleFileChange}
         className="hidden"
       />
@@ -163,22 +283,31 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
               disabled={disabled}
             />
                         
-            {/* ✅ Direct file upload button */}
+            {/* Direct file upload button */}
             <Button
               type="button"
               size="sm"
               variant="ghost"
               onClick={handleAttachmentClick}
-              disabled={disabled}
+              disabled={disabled || uploadingFiles.length > 0}
               className="absolute right-2 bottom-2 text-gray-400 hover:text-white cursor-pointer"
             >
-              <Paperclip size={16} />
+              {uploadingFiles.length > 0 ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Paperclip size={16} />
+              )}
             </Button>
           </div>
 
           <Button
             type="submit"
-            disabled={disabled || (!message.trim() && attachments.length === 0)}
+            disabled={
+              disabled || 
+              (!message.trim() && attachments.length === 0) ||
+              uploadingFiles.length > 0 || // Disable send while uploading
+              attachments.some(att => att.uploadFailed) // Disable if any uploads failed
+            }
             className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
           >
             <Send size={16} />

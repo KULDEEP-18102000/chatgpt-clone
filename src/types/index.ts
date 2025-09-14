@@ -9,11 +9,13 @@ export interface Message {
 
 export interface Attachment {
   id: string;
-  type: 'image' | 'file';
-  url: string;
   name: string;
   size: number;
-  mimeType: string;
+  type: 'image' | 'file';
+  url: string;
+  file?: File;
+  uploading?: boolean;
+  uploadFailed?: boolean;
 }
 
 export interface Conversation {
