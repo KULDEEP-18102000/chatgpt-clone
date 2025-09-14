@@ -210,7 +210,7 @@ export function Sidebar({
                             size="sm"
                             variant="ghost"
                             onClick={(e) => handleEditStart(conversation, e)}
-                            className="h-6 w-6 p-0 text-gray-400 hover:text-white hover:bg-gray-600"
+                            className="h-6 w-6 p-0 text-gray-400 hover:text-white hover:bg-gray-600 cursor-pointer"
                           >
                             <Edit3 size={12} />
                           </Button>
@@ -218,7 +218,7 @@ export function Sidebar({
                             size="sm"
                             variant="ghost"
                             onClick={(e) => handleDelete(conversation.id, e)}
-                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-400 hover:bg-gray-600"
+                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-400 hover:bg-gray-600 cursor-pointer"
                           >
                             <Trash2 size={12} />
                           </Button>

@@ -89,7 +89,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
               size="sm"
               variant="ghost"
               onClick={() => setShowFileUpload(!showFileUpload)}
-              className="absolute right-2 bottom-2 text-gray-400 hover:text-white"
+              className="absolute right-2 bottom-2 text-gray-400 hover:text-white cursor-pointer"
             >
               <Paperclip size={16} />
             </Button>
@@ -98,7 +98,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
           <Button
             type="submit"
             disabled={disabled || (!message.trim() && attachments.length === 0)}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
           >
             <Send size={16} />
           </Button>
@@ -106,7 +106,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
       </form>
 
       {showFileUpload && (
-        <div className="absolute bottom-full mb-2 left-0 right-0">
+        <div className="absolute bottom-full mb-2 left-0 right-0 cursor-pointer">
           <FileUpload onUpload={handleFileUpload} />
         </div>
       )}
