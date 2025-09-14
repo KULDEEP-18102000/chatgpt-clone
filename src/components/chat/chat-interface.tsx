@@ -51,11 +51,13 @@ export function ChatInterface() {
             
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
         <div className="flex-1 overflow-hidden">
-          <MessageList
-            messages={messages}
-            isLoading={isLoading}
-            onEditMessage={editMessage}
-          />
+          <div className="h-full custom-scrollbar overflow-y-auto">
+            <MessageList
+              messages={messages}
+              isLoading={isLoading}
+              onEditMessage={editMessage}
+            />
+          </div>
         </div>
                 
         <div className="border-t border-gray-700 bg-gray-800">
