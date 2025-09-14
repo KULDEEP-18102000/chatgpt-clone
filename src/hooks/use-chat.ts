@@ -126,105 +126,108 @@ export function useChat(conversationId: string | null) {
   }, [user?.id]);
 
   const sendMessage = useCallback(async (content: string, attachments?: Attachment[]) => {
-    if (!content.trim() && (!attachments || attachments.length === 0)) {
-      return;
+  if (!content.trim() && (!attachments || attachments.length === 0)) {
+    return;
+  }
+
+  if (!user?.id) {
+    setError('User not found. Please refresh the page.');
+    return;
+  }
+
+  setError(null);
+  setIsLoading(true);
+
+  try {
+    // If no conversation exists, create one
+    let conversationToUse = currentConversationId;
+    if (!conversationToUse) {
+      conversationToUse = crypto.randomUUID();
+      setCurrentConversationId(conversationToUse);
     }
 
-    if (!user?.id) {
-      setError('User not found. Please refresh the page.');
-      return;
+    // ✅ Prepare enhanced content with attachments
+    let enhancedContent = content.trim();
+    if (attachments && attachments.length > 0) {
+      const attachmentDescriptions = attachments.map(att => 
+        att.type === 'image' 
+          ? `[Image: ${att.name}](${att.url})`
+          : `[File: ${att.name}](${att.url})`
+      ).join('\n');
+      enhancedContent = `${content}\n\n${attachmentDescriptions}`;
     }
 
-    setError(null);
-    setIsLoading(true);
+    // ✅ Create user message with enhanced content
+    const userMessage: Message = {
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: enhancedContent, // Store enhanced content with attachment info
+      timestamp: new Date(),
+      attachments: attachments || [],
+      originalContent: content.trim(), // Store original content separately for UI if needed
+    };
 
-    try {
-      // If no conversation exists, create one
-      let conversationToUse = currentConversationId;
-      if (!conversationToUse) {
-        conversationToUse = crypto.randomUUID();
-        setCurrentConversationId(conversationToUse);
-      }
+    // Add user message to state immediately
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
 
-      // Create user message
-      const userMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'user',
-        content: content.trim(),
-        timestamp: new Date(),
-        attachments: attachments || [],
-      };
+    // ✅ Simple API payload - just use the content as is
+    const apiMessages = updatedMessages.map(msg => ({
+      role: msg.role,
+      content: msg.content // Now this includes attachment descriptions
+    }));
 
-      // Add user message to state immediately
-      const updatedMessages = [...messages, userMessage];
-      setMessages(updatedMessages);
+    console.log('API Messages being sent:', apiMessages);
+    console.log('Enhanced content with attachments:', enhancedContent);
 
-      // Prepare message content with attachments
-      let messageContent = content.trim();
-      if (attachments && attachments.length > 0) {
-        const attachmentDescriptions = attachments.map(att => 
-          att.type === 'image' 
-            ? `[Image: ${att.name}](${att.url})`
-            : `[File: ${att.name}](${att.url})`
-        ).join('\n');
-        messageContent = `${content}\n\n${attachmentDescriptions}`;
-      }
+    // Direct API call to chat endpoint
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messages: apiMessages,
+        conversationId: conversationToUse,
+        userId: user.id,
+      }),
+    });
 
-      // Prepare API payload
-      const apiMessages = updatedMessages.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }));
-
-      // Direct API call to chat endpoint
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: apiMessages,
-          conversationId: conversationToUse,
-          userId: user.id,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`API responded with status ${response.status}`);
-      }
-
-      // Get the response text
-      const aiResponseText = await response.text();
-
-      // Create AI message
-      const aiMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: aiResponseText,
-        timestamp: new Date(),
-      };
-
-      // Add AI response to messages
-      const finalMessages = [...updatedMessages, aiMessage];
-      setMessages(finalMessages);
-
-      // Clear input
-      setInput('');
-
-      // Save conversation
-      if (conversationToUse && user?.id) {
-        await saveConversation(conversationToUse, finalMessages);
-        // ✅ Refresh conversations list after saving
-        await loadUserConversations();
-      }
-
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setError(error instanceof Error ? error.message : 'Failed to send message. Please try again.');
-    } finally {
-      setIsLoading(false);
+    if (!response.ok) {
+      throw new Error(`API responded with status ${response.status}`);
     }
-  }, [user?.id, currentConversationId, messages, saveConversation, loadUserConversations]);
+
+    // Get the response text
+    const aiResponseText = await response.text();
+
+    // Create AI message
+    const aiMessage: Message = {
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: aiResponseText,
+      timestamp: new Date(),
+    };
+
+    // Add AI response to messages
+    const finalMessages = [...updatedMessages, aiMessage];
+    setMessages(finalMessages);
+
+    // Clear input
+    setInput('');
+
+    // Save conversation
+    if (conversationToUse && user?.id) {
+      await saveConversation(conversationToUse, finalMessages);
+      await loadUserConversations();
+    }
+
+  } catch (error) {
+    console.error('Error sending message:', error);
+    setError(error instanceof Error ? error.message : 'Failed to send message. Please try again.');
+  } finally {
+    setIsLoading(false);
+  }
+}, [user?.id, currentConversationId, messages, saveConversation, loadUserConversations]);
 
   const editMessage = useCallback(async (messageId: string, newContent: string) => {
     if (!newContent.trim()) {

@@ -1,10 +1,10 @@
 export interface Message {
   id: string;
   role: 'user' | 'assistant' | 'system';
-  content: string;
+  content: string; // Enhanced content with attachments
   timestamp: Date;
   attachments?: Attachment[];
-  isEditing?: boolean;
+  originalContent?: string; // Original text without attachments (optional)
 }
 
 export interface Attachment {
