@@ -14,7 +14,8 @@ interface ChatInputProps {
 export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [uploadingFiles, setUploadingFiles] = useState<string[]>([]); // Track which files are uploading
+  const [uploadingFiles, setUploadingFiles] = useState<string[]>([]);
+  const [isDragOver, setIsDragOver] = useState(false); // NEW: Drag state
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,6 +37,69 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
       e.preventDefault();
       handleSubmit(e);
     }
+  };
+
+  // NEW: Handle clipboard paste for images
+  const handlePaste = async (e: React.ClipboardEvent) => {
+    const clipboardData = e.clipboardData;
+    if (!clipboardData) return;
+
+    const items = Array.from(clipboardData.items);
+    const imageItems = items.filter(item => item.type.startsWith('image/'));
+    
+    if (imageItems.length === 0) return;
+
+    // Prevent default paste behavior for images
+    e.preventDefault();
+    
+    console.log(`Pasting ${imageItems.length} image(s) from clipboard`);
+
+    const files: File[] = [];
+    
+    // Convert clipboard items to files
+    for (const item of imageItems) {
+      const file = item.getAsFile();
+      if (file) {
+        // Create a more descriptive filename
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const extension = file.type.split('/')[1] || 'png';
+        const filename = `pasted-image-${timestamp}.${extension}`;
+        
+        // Create a new file with a better name
+        const renamedFile = new File([file], filename, { type: file.type });
+        files.push(renamedFile);
+      }
+    }
+
+    if (files.length > 0) {
+      // Process pasted files the same way as uploaded files
+      await processFiles(files);
+    }
+  };
+
+  // NEW: Drag and drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length === 0) return;
+
+    console.log(`Dropped ${files.length} file(s)`);
+    await processFiles(files);
   };
 
   // Direct file upload handler
@@ -72,22 +136,17 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
     }
   };
 
-  // Handle file selection and upload
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    const filesArray = Array.from(files);
-    
+  // NEW: Extracted file processing logic to be reused for upload, paste, and drag & drop
+  const processFiles = async (files: File[]) => {
     // Create temporary attachments with loading state
-    const tempAttachments: Attachment[] = filesArray.map(file => ({
+    const tempAttachments: Attachment[] = files.map(file => ({
       id: crypto.randomUUID(),
       name: file.name,
       size: file.size,
       type: file.type.startsWith('image/') ? 'image' : 'file',
       url: '', // Will be populated after upload
       file: file,
-      uploading: true, // Add uploading state
+      uploading: true,
     }));
 
     // Add temporary attachments to state
@@ -100,7 +159,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
     try {
       // Upload to Cloudinary
       console.log('Uploading files to Cloudinary...');
-      const uploadResult = await uploadFilesToCloudinary(filesArray);
+      const uploadResult = await uploadFilesToCloudinary(files);
       
       console.log('Upload result:', uploadResult);
 
@@ -139,7 +198,6 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
       // Show success message if there were failed uploads
       if (uploadResult.failed && uploadResult.failed.length > 0) {
         console.warn('Some files failed to upload:', uploadResult.failed);
-        // You could show a toast notification here
       }
 
     } catch (error) {
@@ -161,6 +219,15 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
       
       setUploadingFiles(prev => prev.filter(id => !uploadingIds.includes(id)));
     }
+  };
+
+  // Handle file selection and upload
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const filesArray = Array.from(files);
+    await processFiles(filesArray);
 
     // Reset file input
     if (fileInputRef.current) {
@@ -278,8 +345,16 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
-              className="min-h-[50px] max-h-[200px] resize-none bg-gray-700 border-gray-600 text-white placeholder-gray-400 pr-12"
+              onPaste={handlePaste} // NEW: Clipboard paste support
+              onDragOver={handleDragOver} // NEW: Drag and drop support
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              placeholder="Type your message, paste images (Ctrl+V), or drag & drop files..."
+              className={`min-h-[50px] max-h-[200px] resize-none border-gray-600 text-white placeholder-gray-400 pr-12 transition-colors ${
+                isDragOver 
+                  ? 'bg-blue-700/30 border-blue-500 border-2' 
+                  : 'bg-gray-700 border-gray-600'
+              }`}
               disabled={disabled}
             />
                         
