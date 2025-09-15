@@ -88,12 +88,12 @@ export function SignUp() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-gray-800 border-gray-700">
+    <Card className="w-full max-w-md mx-auto bg-white border-gray-200 shadow-lg">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center text-white">
+        <CardTitle className="text-2xl text-center text-gray-900">
           Sign Up
         </CardTitle>
-        <CardDescription className="text-center text-gray-400">
+        <CardDescription className="text-center text-gray-600">
           Create a new account to get started
         </CardDescription>
       </CardHeader>
@@ -102,7 +102,7 @@ export function SignUp() {
           <div className="space-y-2">
             <label
               htmlFor="firstName"
-              className="text-sm font-medium text-gray-300"
+              className="text-sm font-medium text-gray-700"
             >
               First Name
             </label>
@@ -112,14 +112,14 @@ export function SignUp() {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="Enter your first name"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               disabled={loading}
             />
           </div>
           <div className="space-y-2">
             <label
               htmlFor="email"
-              className="text-sm font-medium text-gray-300"
+              className="text-sm font-medium text-gray-700"
             >
               Email
             </label>
@@ -130,14 +130,14 @@ export function SignUp() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              className="bg-gray-700 border-gray-600 text-white"
+              className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               disabled={loading}
             />
           </div>
           <div className="space-y-2">
             <label
               htmlFor="password"
-              className="text-sm font-medium text-gray-300"
+              className="text-sm font-medium text-gray-700"
             >
               Password
             </label>
@@ -148,30 +148,30 @@ export function SignUp() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Create a password (min. 6 characters)"
               required
-              className="bg-gray-700 border-gray-600 text-white"
+              className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               disabled={loading}
               minLength={6}
             />
           </div>
           {error && (
-            <div className="text-red-400 text-sm text-center bg-red-900/20 p-2 rounded">
+            <div className="text-red-600 text-sm text-center bg-red-50 p-2 rounded border border-red-200">
               {error}
             </div>
           )}
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={loading}
           >
             {loading ? "Creating account..." : "Sign Up"}
           </Button>
         </form>
         <div className="mt-4 text-center">
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-600 text-sm">
             Already have an account?{" "}
             <Link
               href="/sign-in"
-              className="text-blue-400 hover:text-blue-300 underline"
+              className="text-blue-600 hover:text-blue-700 underline"
             >
               Sign in
             </Link>
