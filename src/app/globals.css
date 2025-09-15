@@ -25,10 +25,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Add this to your global CSS file (globals.css or similar) */
-
-/* ===== Custom Scrollbar Styles ===== */
-
+/* ===== Light Theme Custom Scrollbar Styles ===== */
 /* For Webkit browsers (Chrome, Safari, Edge) */
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
@@ -36,13 +33,13 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(55, 65, 81, 0.3); /* gray-700 with opacity */
+  background: rgba(229, 231, 235, 0.5); /* gray-200 with opacity */
   border-radius: 10px;
   margin: 8px 0;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(107, 114, 128, 0.6); /* gray-500 with opacity */
+  background: rgba(156, 163, 175, 0.7); /* gray-400 with opacity */
   border-radius: 10px;
   border: 2px solid transparent;
   background-clip: padding-box;
@@ -54,12 +51,12 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:active {
-  background: rgba(107, 114, 128, 1); /* gray-500 full opacity */
+  background: rgba(75, 85, 99, 1); /* gray-600 full opacity */
 }
 
 /* Corner where horizontal and vertical scrollbars meet */
 .custom-scrollbar::-webkit-scrollbar-corner {
-  background: rgba(55, 65, 81, 0.3);
+  background: rgba(229, 231, 235, 0.5);
 }
 
 /* ===== Alternative Thin Scrollbar ===== */
@@ -73,24 +70,24 @@ body {
 }
 
 .thin-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(107, 114, 128, 0.4);
+  background: rgba(156, 163, 175, 0.6); /* gray-400 with opacity */
   border-radius: 2px;
   transition: all 0.2s ease;
 }
 
 .thin-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(107, 114, 128, 0.7);
+  background: rgba(107, 114, 128, 0.8); /* gray-500 with more opacity */
 }
 
 /* ===== Firefox Scrollbar Support ===== */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(107, 114, 128, 0.6) rgba(55, 65, 81, 0.3);
+  scrollbar-color: rgba(156, 163, 175, 0.7) rgba(229, 231, 235, 0.5);
 }
 
 .thin-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(107, 114, 128, 0.4) transparent;
+  scrollbar-color: rgba(156, 163, 175, 0.6) transparent;
 }
 
 /* ===== Auto-hide Scrollbar ===== */
@@ -102,7 +99,7 @@ body {
 }
 
 .auto-hide-scrollbar:hover {
-  scrollbar-color: rgba(107, 114, 128, 0.6) rgba(55, 65, 81, 0.3);
+  scrollbar-color: rgba(156, 163, 175, 0.7) rgba(229, 231, 235, 0.5);
 }
 
 .auto-hide-scrollbar::-webkit-scrollbar {
@@ -120,39 +117,81 @@ body {
 }
 
 .auto-hide-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: rgba(107, 114, 128, 0.6);
+  background: rgba(156, 163, 175, 0.7);
 }
 
 .auto-hide-scrollbar:hover::-webkit-scrollbar-thumb:hover {
   background: rgba(107, 114, 128, 0.8);
 }
 
-/* ===== Modern Gradient Scrollbar ===== */
+/* ===== Modern Light Theme Gradient Scrollbar ===== */
 .gradient-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
 
 .gradient-scrollbar::-webkit-scrollbar-track {
-  background: rgba(31, 41, 55, 0.5); /* gray-800 with opacity */
+  background: rgba(243, 244, 246, 0.8); /* gray-100 with opacity */
   border-radius: 10px;
 }
 
 .gradient-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    rgba(59, 130, 246, 0.6) 0%,
-    rgba(37, 99, 235, 0.6) 100%
-  );
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.6) 0%, rgba(37, 99, 235, 0.7) 100%);
   border-radius: 10px;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   transition: all 0.2s ease;
 }
 
 .gradient-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(59, 130, 246, 0.8) 0%,
-    rgba(37, 99, 235, 0.8) 100%
-  );
-  border-color: rgba(59, 130, 246, 0.4);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.9) 100%);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* ===== Subtle Light Theme Scrollbar (Alternative) ===== */
+.subtle-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.subtle-scrollbar::-webkit-scrollbar-track {
+  background: rgba(249, 250, 251, 0.8); /* gray-50 with opacity */
+  border-radius: 8px;
+}
+
+.subtle-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(209, 213, 219, 0.8); /* gray-300 with opacity */
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.subtle-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.9); /* gray-400 with more opacity */
+}
+
+/* ===== Invisible Until Hover (Clean Look) ===== */
+.hover-only-scrollbar {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.hover-only-scrollbar::-webkit-scrollbar {
+  width: 0px;
+  transition: width 0.2s ease;
+}
+
+.hover-only-scrollbar:hover::-webkit-scrollbar {
+  width: 6px;
+}
+
+.hover-only-scrollbar:hover::-webkit-scrollbar-track {
+  background: rgba(243, 244, 246, 0.6);
+  border-radius: 6px;
+}
+
+.hover-only-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.7);
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.hover-only-scrollbar:hover::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.8);
 }
