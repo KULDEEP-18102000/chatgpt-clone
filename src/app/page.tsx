@@ -24,14 +24,14 @@ export default function HomePage() {
           <SignIn />  {/* ← Simple, no appearance prop */}
         </div>
         
-        <div className="text-center mt-8">
+        {/* <div className="text-center mt-8">
           <p className="text-gray-500 text-sm">
             Don't have an account?{' '}
             <a href="/sign-up" className="text-blue-400 hover:text-blue-300 underline">
               Sign up here
             </a>
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
