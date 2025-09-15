@@ -300,10 +300,10 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
                 key={attachment.id}
                 className={`flex items-center rounded-lg px-3 py-2 text-sm group transition-colors ${
                   attachment.uploading
-                    ? "bg-blue-700/50 border border-blue-500"
+                    ? "bg-blue-50 border border-blue-300"
                     : attachment.uploadFailed
-                    ? "bg-red-700/50 border border-red-500"
-                    : "bg-gray-700 hover:bg-gray-600"
+                    ? "bg-red-50 border border-red-300"
+                    : "bg-gray-100 hover:bg-gray-200 border border-gray-300"
                 }`}
               >
                 <div className="flex items-center space-x-2">
@@ -311,7 +311,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
                     <div className="w-6 h-6 flex items-center justify-center">
                       <Loader2
                         size={16}
-                        className="animate-spin text-blue-400"
+                        className="animate-spin text-blue-600"
                       />
                     </div>
                   ) : attachment.uploadFailed ? (
@@ -332,10 +332,10 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
                     <span
                       className={`truncate max-w-[200px] text-xs ${
                         attachment.uploading
-                          ? "text-blue-300"
+                          ? "text-blue-700"
                           : attachment.uploadFailed
-                          ? "text-red-300"
-                          : "text-gray-300"
+                          ? "text-red-700"
+                          : "text-gray-700"
                       }`}
                     >
                       {attachment.name}
@@ -355,7 +355,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
                   size="sm"
                   variant="ghost"
                   onClick={() => removeAttachment(attachment.id)}
-                  className="ml-2 p-1 h-6 w-6 text-gray-400 hover:text-white hover:bg-gray-600"
+                  className="ml-2 p-1 h-6 w-6 text-gray-500 hover:text-gray-900 hover:bg-gray-200"
                   disabled={attachment.uploading}
                 >
                   <X size={12} />
@@ -387,10 +387,10 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 placeholder="Type your message, paste images/text (large text opens in modal), or drag & drop files..."
-                className={`min-h-[50px] max-h-[200px] resize-none border-gray-600 text-white placeholder-gray-400 pr-12 transition-colors ${
+                className={`min-h-[50px] max-h-[200px] resize-none text-gray-900 placeholder-gray-500 pr-12 transition-colors ${
                   isDragOver
-                    ? "bg-blue-700/30 border-blue-500 border-2"
-                    : "bg-gray-700 border-gray-600"
+                    ? "bg-blue-50 border-blue-400 border-2"
+                    : "bg-white border-gray-300"
                 }`}
                 disabled={disabled}
               />
@@ -401,7 +401,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
                 variant="ghost"
                 onClick={handleAttachmentClick}
                 disabled={disabled || uploadingFiles.length > 0}
-                className="absolute right-2 bottom-2 text-gray-400 hover:text-white cursor-pointer"
+                className="absolute right-2 bottom-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 cursor-pointer"
               >
                 {uploadingFiles.length > 0 ? (
                   <Loader2 size={16} className="animate-spin" />

@@ -26,10 +26,10 @@ export function MessageList({
       <div className="max-w-4xl mx-auto px-4 py-8">
         {messages.length === 0 ? (
           <div className="text-center py-20">
-            <h1 className="text-4xl font-bold text-white mb-4">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
               ChatGPT Clone
             </h1>
-            <p className="text-gray-400">How can I help you today?</p>
+            <p className="text-gray-600">How can I help you today?</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -42,11 +42,11 @@ export function MessageList({
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-700 rounded-lg p-4 max-w-3xl">
+                <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 max-w-3xl">
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-75"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-150"></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-75"></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-150"></div>
                   </div>
                 </div>
               </div>

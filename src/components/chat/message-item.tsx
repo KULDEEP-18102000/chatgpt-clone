@@ -55,7 +55,9 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
 
         <div
           className={`rounded-lg p-4 ${
-            isUser ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-100"
+            isUser
+              ? "bg-blue-600 text-white"
+              : "bg-gray-50 text-gray-900 border border-gray-200"
           }`}
         >
           {isEditing ? (
@@ -63,18 +65,31 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
               <Textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
-                className="min-h-[80px] bg-transparent border-gray-500 text-white"
+                className={`min-h-[80px] ${
+                  isUser
+                    ? "bg-transparent border-gray-300 text-white placeholder:text-gray-200"
+                    : "bg-white border-gray-300 text-gray-900"
+                }`}
                 autoFocus
               />
               <div className="flex space-x-2">
                 <Button
                   size="sm"
                   onClick={handleSave}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-green-600 hover:bg-green-700 text-white"
                 >
                   <Check size={14} />
                 </Button>
-                <Button size="sm" variant="outline" onClick={handleCancel}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleCancel}
+                  className={
+                    isUser
+                      ? "border-gray-300 text-gray-200 hover:bg-gray-100 hover:text-gray-900"
+                      : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                  }
+                >
                   <X size={14} />
                 </Button>
               </div>
@@ -87,7 +102,11 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
                   {message.attachments.map((attachment) => (
                     <div
                       key={attachment.id}
-                      className="border border-gray-600 rounded p-2"
+                      className={`rounded p-2 ${
+                        isUser
+                          ? "border border-gray-300"
+                          : "border border-gray-300 bg-white"
+                      }`}
                     >
                       {attachment.type === "image" ? (
                         <img
@@ -100,7 +119,11 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
                           href={attachment.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-400 hover:text-blue-300 underline"
+                          className={
+                            isUser
+                              ? "text-blue-200 hover:text-blue-100 underline"
+                              : "text-blue-600 hover:text-blue-700 underline"
+                          }
                         >
                           {attachment.name}
                         </a>
@@ -118,7 +141,7 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
             size="sm"
             variant="ghost"
             onClick={handleEdit}
-            className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-white"
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-500 hover:text-gray-900 hover:bg-gray-100"
           >
             <Edit2 size={14} />
           </Button>

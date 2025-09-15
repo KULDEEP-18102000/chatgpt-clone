@@ -37,7 +37,7 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-800">
+    <div className="flex h-screen bg-gray-50">
       <Sidebar
         conversations={conversations}
         currentConversationId={currentConversationId} // ✅ Use hook's state
@@ -64,7 +64,7 @@ export function ChatInterface() {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 bg-gray-800">
+        <div className="border-t border-gray-200 bg-white">
           <div className="max-w-4xl mx-auto px-4 py-4">
             <ChatInput onSendMessage={sendMessage} disabled={isLoading} />
           </div>
@@ -73,7 +73,7 @@ export function ChatInterface() {
 
       {/* ✅ Optional: Show error messages */}
       {error && (
-        <div className="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">
+        <div className="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow-lg z-50 border border-red-700">
           {error}
         </div>
       )}

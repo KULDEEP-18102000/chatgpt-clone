@@ -110,7 +110,7 @@ export function Sidebar({
       {/* Mobile menu button */}
       <Button
         onClick={onToggle}
-        className="fixed top-4 left-4 z-50 lg:hidden bg-gray-800 hover:bg-gray-700 text-white border border-gray-600"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 shadow-md"
         size="sm"
       >
         <Menu size={18} />
@@ -118,19 +118,21 @@ export function Sidebar({
 
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 h-full w-64 bg-gray-900 border-r border-gray-700 transform transition-transform duration-300 ease-in-out z-40 ${
+        className={`fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out z-40 shadow-lg ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 lg:static lg:z-0`}
+        } lg:translate-x-0 lg:static lg:z-0 lg:shadow-none`}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-700">
-            <h2 className="text-white font-semibold text-lg">Chat History</h2>
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <h2 className="text-gray-900 font-semibold text-lg">
+              Chat History
+            </h2>
             <Button
               size="sm"
               variant="ghost"
               onClick={onToggle}
-              className="lg:hidden text-gray-400 hover:text-white p-1"
+              className="lg:hidden text-gray-600 hover:text-gray-900 hover:bg-gray-100 p-1"
             >
               <X size={18} />
             </Button>
@@ -151,8 +153,8 @@ export function Sidebar({
           <div className="flex-1 overflow-y-auto px-2 pb-4">
             {conversations.length === 0 ? (
               <div className="text-center py-8">
-                <MessageSquare className="mx-auto h-12 w-12 text-gray-500 mb-3" />
-                <p className="text-gray-400 text-sm">No conversations yet</p>
+                <MessageSquare className="mx-auto h-12 w-12 text-gray-400 mb-3" />
+                <p className="text-gray-600 text-sm">No conversations yet</p>
                 <p className="text-gray-500 text-xs mt-1">
                   Start a new chat to begin
                 </p>
@@ -164,8 +166,8 @@ export function Sidebar({
                     key={conversation.id}
                     className={`group relative rounded-lg transition-all duration-200 ${
                       currentConversationId === conversation.id
-                        ? "bg-gray-700 text-white"
-                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                        ? "bg-blue-50 text-gray-900 border border-blue-200"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                     }`}
                   >
                     <div
@@ -174,7 +176,11 @@ export function Sidebar({
                     >
                       <MessageSquare
                         size={16}
-                        className="flex-shrink-0 text-gray-400"
+                        className={`flex-shrink-0 ${
+                          currentConversationId === conversation.id
+                            ? "text-blue-600"
+                            : "text-gray-500"
+                        }`}
                       />
                       <div className="flex-1 min-w-0">
                         {editingId === conversation.id ? (
@@ -190,7 +196,7 @@ export function Sidebar({
                                 handleEditCancel();
                               }
                             }}
-                            className="bg-gray-600 text-white text-sm rounded px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            className="bg-white text-gray-900 text-sm rounded border border-gray-300 px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             autoFocus
                             onClick={(e) => e.stopPropagation()}
                           />
@@ -215,7 +221,7 @@ export function Sidebar({
                             size="sm"
                             variant="ghost"
                             onClick={(e) => handleEditStart(conversation, e)}
-                            className="h-6 w-6 p-0 text-gray-400 hover:text-white hover:bg-gray-600 cursor-pointer"
+                            className="h-6 w-6 p-0 text-gray-500 hover:text-gray-900 hover:bg-gray-100 cursor-pointer"
                           >
                             <Edit3 size={12} />
                           </Button>
@@ -223,7 +229,7 @@ export function Sidebar({
                             size="sm"
                             variant="ghost"
                             onClick={(e) => handleDelete(conversation.id, e)}
-                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-400 hover:bg-gray-600 cursor-pointer"
+                            className="h-6 w-6 p-0 text-gray-500 hover:text-red-600 hover:bg-red-50 cursor-pointer"
                           >
                             <Trash2 size={12} />
                           </Button>
@@ -237,7 +243,7 @@ export function Sidebar({
           </div>
 
           {/* Footer */}
-          <div className="border-t border-gray-700 p-4">
+          <div className="border-t border-gray-200 p-4">
             <div className="text-xs text-gray-500 text-center">
               <p>ChatGPT Clone</p>
               <p className="mt-1">Powered by Vercel AI</p>
