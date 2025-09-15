@@ -43,7 +43,7 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
       >
         <div
           className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-            isUser ? "bg-blue-600 ml-3" : "bg-gray-600 mr-3"
+            isUser ? "bg-gray-700 ml-3" : "bg-gray-600 mr-3"
           }`}
         >
           {isUser ? (
@@ -56,7 +56,7 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
         <div
           className={`rounded-lg p-4 ${
             isUser
-              ? "bg-blue-600 text-white"
+              ? "bg-gray-100 text-gray-900 border border-gray-200"
               : "bg-gray-50 text-gray-900 border border-gray-200"
           }`}
         >
@@ -65,11 +65,7 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
               <Textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
-                className={`min-h-[80px] ${
-                  isUser
-                    ? "bg-transparent border-gray-300 text-white placeholder:text-gray-200"
-                    : "bg-white border-gray-300 text-gray-900"
-                }`}
+                className="min-h-[80px] bg-white border-gray-300 text-gray-900"
                 autoFocus
               />
               <div className="flex space-x-2">
@@ -84,11 +80,7 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
                   size="sm"
                   variant="outline"
                   onClick={handleCancel}
-                  className={
-                    isUser
-                      ? "border-gray-300 text-gray-200 hover:bg-gray-100 hover:text-gray-900"
-                      : "border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
                   <X size={14} />
                 </Button>
@@ -102,11 +94,7 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
                   {message.attachments.map((attachment) => (
                     <div
                       key={attachment.id}
-                      className={`rounded p-2 ${
-                        isUser
-                          ? "border border-gray-300"
-                          : "border border-gray-300 bg-white"
-                      }`}
+                      className="rounded p-2 border border-gray-300 bg-white"
                     >
                       {attachment.type === "image" ? (
                         <img
@@ -119,11 +107,7 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
                           href={attachment.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={
-                            isUser
-                              ? "text-blue-200 hover:text-blue-100 underline"
-                              : "text-blue-600 hover:text-blue-700 underline"
-                          }
+                          className="text-blue-600 hover:text-blue-700 underline"
                         >
                           {attachment.name}
                         </a>
