@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Message, Attachment, Conversation,User } from '@/types';
 // import { ChartNoAxesColumnDecreasing } from 'lucide-react';
-import { redirect } from 'next/navigation';
+// import { redirect } from 'next/navigation';
 
 export function useChat(conversationId: string | null) {
   // Safe way to get user from localStorage
@@ -97,8 +97,6 @@ export function useChat(conversationId: string | null) {
   useEffect(() => {
     if (user?.id) {
       loadUserConversations();
-    }else{
-      redirect('/');
     }
   }, [loadUserConversations, user?.id]); // Don't include loadUserConversations to avoid infinite loop
 
