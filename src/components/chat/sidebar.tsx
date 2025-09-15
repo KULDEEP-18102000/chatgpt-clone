@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Plus, Menu, X, MessageSquare, Trash2, Edit3 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Conversation } from '@/types';
+import { useState } from "react";
+import { Plus, Menu, X, MessageSquare, Trash2, Edit3 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Conversation } from "@/types";
 
 interface SidebarProps {
   conversations: Conversation[];
@@ -27,7 +27,7 @@ export function Sidebar({
   onToggle,
 }: SidebarProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState('');
+  const [editTitle, setEditTitle] = useState("");
 
   const handleEditStart = (conversation: Conversation, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -37,28 +37,28 @@ export function Sidebar({
 
   const handleEditSave = async (conversationId: string) => {
     try {
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
       await fetch(`/api/conversations/${conversationId}?userId=${user?.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: editTitle.trim() }),
       });
       setEditingId(null);
       loadUserConversations();
       // You might want to refresh conversations here
     } catch (error) {
-      console.error('Error updating conversation title:', error);
+      console.error("Error updating conversation title:", error);
     }
   };
 
   const handleEditCancel = () => {
     setEditingId(null);
-    setEditTitle('');
+    setEditTitle("");
   };
 
   const handleDelete = async (conversationId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm('Are you sure you want to delete this conversation?')) return;
+    if (!confirm("Are you sure you want to delete this conversation?")) return;
 
     deleteConversation(conversationId);
 
@@ -76,7 +76,7 @@ export function Sidebar({
 
   const formatTitle = (title: string) => {
     if (title.length > 30) {
-      return title.substring(0, 30) + '...';
+      return title.substring(0, 30) + "...";
     }
     return title;
   };
@@ -85,11 +85,11 @@ export function Sidebar({
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - new Date(date).getTime());
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) {
-      return 'Today';
+      return "Today";
     } else if (diffDays === 1) {
-      return 'Yesterday';
+      return "Yesterday";
     } else if (diffDays < 7) {
       return `${diffDays} days ago`;
     } else {
@@ -119,7 +119,7 @@ export function Sidebar({
       {/* Sidebar */}
       <div
         className={`fixed left-0 top-0 h-full w-64 bg-gray-900 border-r border-gray-700 transform transition-transform duration-300 ease-in-out z-40 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:static lg:z-0`}
       >
         <div className="flex flex-col h-full">
@@ -153,7 +153,9 @@ export function Sidebar({
               <div className="text-center py-8">
                 <MessageSquare className="mx-auto h-12 w-12 text-gray-500 mb-3" />
                 <p className="text-gray-400 text-sm">No conversations yet</p>
-                <p className="text-gray-500 text-xs mt-1">Start a new chat to begin</p>
+                <p className="text-gray-500 text-xs mt-1">
+                  Start a new chat to begin
+                </p>
               </div>
             ) : (
               <div className="space-y-1">
@@ -162,15 +164,18 @@ export function Sidebar({
                     key={conversation.id}
                     className={`group relative rounded-lg transition-all duration-200 ${
                       currentConversationId === conversation.id
-                        ? 'bg-gray-700 text-white'
-                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                        ? "bg-gray-700 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
                     }`}
                   >
                     <div
                       onClick={() => onSelectConversation(conversation.id)}
                       className="flex items-center space-x-3 p-3 cursor-pointer w-full"
                     >
-                      <MessageSquare size={16} className="flex-shrink-0 text-gray-400" />
+                      <MessageSquare
+                        size={16}
+                        className="flex-shrink-0 text-gray-400"
+                      />
                       <div className="flex-1 min-w-0">
                         {editingId === conversation.id ? (
                           <input
@@ -179,9 +184,9 @@ export function Sidebar({
                             onChange={(e) => setEditTitle(e.target.value)}
                             onBlur={() => handleEditSave(conversation.id)}
                             onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
+                              if (e.key === "Enter") {
                                 handleEditSave(conversation.id);
-                              } else if (e.key === 'Escape') {
+                              } else if (e.key === "Escape") {
                                 handleEditCancel();
                               }
                             }}

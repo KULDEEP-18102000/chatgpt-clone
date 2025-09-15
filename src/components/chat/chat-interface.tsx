@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { MessageList } from './message-list';
-import { ChatInput } from './chat-input';
-import { Sidebar } from './sidebar';
-import { useChat } from '@/hooks/use-chat';
+import { useState } from "react";
+import { MessageList } from "./message-list";
+import { ChatInput } from "./chat-input";
+import { Sidebar } from "./sidebar";
+import { useChat } from "@/hooks/use-chat";
 
 export function ChatInterface() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -48,8 +48,12 @@ export function ChatInterface() {
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
       />
-            
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
+
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          sidebarOpen ? "ml-64" : "ml-0"
+        }`}
+      >
         <div className="flex-1 overflow-hidden">
           <div className="h-full custom-scrollbar overflow-y-auto">
             <MessageList
@@ -59,13 +63,10 @@ export function ChatInterface() {
             />
           </div>
         </div>
-                
+
         <div className="border-t border-gray-700 bg-gray-800">
           <div className="max-w-4xl mx-auto px-4 py-4">
-            <ChatInput
-              onSendMessage={sendMessage}
-              disabled={isLoading}
-            />
+            <ChatInput onSendMessage={sendMessage} disabled={isLoading} />
           </div>
         </div>
       </div>

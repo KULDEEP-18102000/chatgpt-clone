@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { MessageItem } from './message-item';
-import { Message } from '@/types';
+import { useEffect, useRef } from "react";
+import { MessageItem } from "./message-item";
+import { Message } from "@/types";
 
 interface MessageListProps {
   messages: Message[];
@@ -10,11 +10,15 @@ interface MessageListProps {
   onEditMessage: (messageId: string, newContent: string) => void;
 }
 
-export function MessageList({ messages, isLoading, onEditMessage }: MessageListProps) {
+export function MessageList({
+  messages,
+  isLoading,
+  onEditMessage,
+}: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
@@ -22,7 +26,9 @@ export function MessageList({ messages, isLoading, onEditMessage }: MessageListP
       <div className="max-w-4xl mx-auto px-4 py-8">
         {messages.length === 0 ? (
           <div className="text-center py-20">
-            <h1 className="text-4xl font-bold text-white mb-4">ChatGPT Clone</h1>
+            <h1 className="text-4xl font-bold text-white mb-4">
+              ChatGPT Clone
+            </h1>
             <p className="text-gray-400">How can I help you today?</p>
           </div>
         ) : (
