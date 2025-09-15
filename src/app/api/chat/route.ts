@@ -3,7 +3,8 @@ import { google } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { contextManager } from '@/lib/context-manager';
 import { memoryManager } from '@/lib/memory';
-import { saveConversation, getConversation } from '@/lib/db';
+// import { saveConversation, getConversation } from '@/lib/db';
+import { Memory } from '@/types';
 
 // 🎭 MOCK RESPONSES (remove after Gemini is working)
 const MOCK_RESPONSES = [
@@ -39,6 +40,7 @@ function getRandomMockResponse(userMessage: string): string {
   return contextualResponse;
 }
 
+
 export async function POST(req: NextRequest) {
   try {
     // Parse request body with error handling
@@ -66,7 +68,7 @@ export async function POST(req: NextRequest) {
     console.log('👤 User message:', userMessage.content);
 
     
-    let memories = [];
+    let memories: Memory[] = [];
     try {
       const memoriesResult = await memoryManager.searchMemories(userId, userMessage.content);
       if (Array.isArray(memoriesResult)) {
@@ -100,7 +102,7 @@ export async function POST(req: NextRequest) {
         model: google('gemini-1.5-flash'), // or 'gemini-1.5-pro' for better quality
         messages: contextMessages,
         temperature: 0.7,
-        maxTokens: 2000,
+        // maxTokens: 2000,
       });
       console.log('Gemini API response:', result);
 
@@ -142,7 +144,7 @@ export async function POST(req: NextRequest) {
 
   } catch (error) {
     console.error('❌ Chat API error:', error);
-    return new NextResponse(`Error: ${error.message || 'Internal Server Error'}`, { status: 500 });
+    return new NextResponse(`Error: ${'Internal Server Error'}`, { status: 500 });
   }
 }
 

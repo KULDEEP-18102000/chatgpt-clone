@@ -61,3 +61,8 @@ export interface UserResponse {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Memory {
+  text: string;
+  [key: string]: unknown;
+}
