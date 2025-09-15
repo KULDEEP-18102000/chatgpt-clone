@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Edit2, Check, X, User, Bot } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Message } from '@/types';
+import { useState } from "react";
+import { Edit2, Check, X, User, Bot } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Message } from "@/types";
 
 interface MessageItemProps {
   message: Message;
@@ -32,20 +32,32 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
     setIsEditing(false);
   };
 
-  const isUser = message.role === 'user';
+  const isUser = message.role === "user";
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} group`}>
-      <div className={`flex max-w-3xl ${isUser ? 'flex-row-reverse' : 'flex-row'} items-start space-x-3`}>
-        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-          isUser ? 'bg-blue-600 ml-3' : 'bg-gray-600 mr-3'
-        }`}>
-          {isUser ? <User size={16} className="text-white" /> : <Bot size={16} className="text-white" />}
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"} group`}>
+      <div
+        className={`flex max-w-3xl ${
+          isUser ? "flex-row-reverse" : "flex-row"
+        } items-start space-x-3`}
+      >
+        <div
+          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+            isUser ? "bg-blue-600 ml-3" : "bg-gray-600 mr-3"
+          }`}
+        >
+          {isUser ? (
+            <User size={16} className="text-white" />
+          ) : (
+            <Bot size={16} className="text-white" />
+          )}
         </div>
-        
-        <div className={`rounded-lg p-4 ${
-          isUser ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-100'
-        }`}>
+
+        <div
+          className={`rounded-lg p-4 ${
+            isUser ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-100"
+          }`}
+        >
           {isEditing ? (
             <div className="space-y-3">
               <Textarea
@@ -55,7 +67,11 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
                 autoFocus
               />
               <div className="flex space-x-2">
-                <Button size="sm" onClick={handleSave} className="bg-green-600 hover:bg-green-700">
+                <Button
+                  size="sm"
+                  onClick={handleSave}
+                  className="bg-green-600 hover:bg-green-700"
+                >
                   <Check size={14} />
                 </Button>
                 <Button size="sm" variant="outline" onClick={handleCancel}>
@@ -69,8 +85,11 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
               {message.attachments && message.attachments.length > 0 && (
                 <div className="mt-3 space-y-2">
                   {message.attachments.map((attachment) => (
-                    <div key={attachment.id} className="border border-gray-600 rounded p-2">
-                      {attachment.type === 'image' ? (
+                    <div
+                      key={attachment.id}
+                      className="border border-gray-600 rounded p-2"
+                    >
+                      {attachment.type === "image" ? (
                         <img
                           src={attachment.url}
                           alt={attachment.name}
