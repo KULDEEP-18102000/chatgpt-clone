@@ -37,7 +37,7 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-white">
       <Sidebar
         conversations={conversations}
         currentConversationId={currentConversationId} // ✅ Use hook's state
@@ -51,7 +51,7 @@ export function ChatInterface() {
 
       <div
         className={`flex-1 flex flex-col transition-all duration-300 ${
-          sidebarOpen ? "ml-64" : "ml-0"
+          sidebarOpen ? "flex justify-center" : "ml-0"
         }`}
       >
         <div className="flex-1 overflow-hidden">

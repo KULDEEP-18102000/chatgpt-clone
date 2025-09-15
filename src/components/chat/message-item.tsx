@@ -42,7 +42,7 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
         } items-start space-x-3`}
       >
         <div
-          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center hidden ${
             isUser ? "bg-gray-700 ml-3" : "bg-gray-600 mr-3"
           }`}
         >
@@ -57,7 +57,7 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
           className={`rounded-lg p-4 ${
             isUser
               ? "bg-gray-100 text-gray-900 border border-gray-200"
-              : "bg-gray-50 text-gray-900 border border-gray-200"
+              : "bg-white text-gray-900 border border-transparent"
           }`}
         >
           {isEditing ? (

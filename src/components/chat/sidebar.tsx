@@ -110,7 +110,7 @@ export function Sidebar({
       {/* Mobile menu button */}
       <Button
         onClick={onToggle}
-        className="fixed top-4 left-4 z-50 lg:hidden bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 shadow-md"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white hover:bg-white text-gray-900 border border-gray-300 shadow-md"
         size="sm"
       >
         <Menu size={18} />
@@ -118,7 +118,7 @@ export function Sidebar({
 
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out z-40 shadow-lg ${
+        className={`fixed left-0 top-0 h-full w-64 bg-gray-50 border-r border-gray-200 transform transition-transform duration-300 ease-in-out z-40 shadow-lg ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:static lg:z-0 lg:shadow-none`}
       >
@@ -167,7 +167,7 @@ export function Sidebar({
                     className={`group relative rounded-lg transition-all duration-200 ${
                       currentConversationId === conversation.id
                         ? "bg-blue-50 text-gray-900 border border-blue-200"
-                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                        : "text-gray-700 hover:bg-gray-200 hover:text-gray-900"
                     }`}
                   >
                     <div
