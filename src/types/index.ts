@@ -66,3 +66,19 @@ export interface Memory {
   text: string;
   [key: string]: unknown;
 }
+
+
+export interface UploadedFile {
+  originalName: string;
+  cloudinaryUrl: string;
+  publicId?: string;
+  [key: string]: unknown;
+}
+
+export interface UploadResult {
+  successful: UploadedFile[];
+  failed: Array<{
+    originalName: string;
+    error: string;
+  }>;
+}

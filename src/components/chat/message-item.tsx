@@ -5,6 +5,7 @@ import { Edit2, Check, X, User, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Message } from "@/types";
+import Image from "next/image";
 
 interface MessageItemProps {
   message: Message;
@@ -97,9 +98,11 @@ export function MessageItem({ message, onEdit }: MessageItemProps) {
                       className="rounded p-2 border border-gray-300 bg-white"
                     >
                       {attachment.type === "image" ? (
-                        <img
+                        <Image
                           src={attachment.url}
                           alt={attachment.name}
+                          width={200}
+                          height={200}
                           className="max-w-full h-auto rounded"
                         />
                       ) : (

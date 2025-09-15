@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Message, Attachment, Conversation } from '@/types';
-import { ChartNoAxesColumnDecreasing } from 'lucide-react';
+import { Message, Attachment, Conversation,User } from '@/types';
+// import { ChartNoAxesColumnDecreasing } from 'lucide-react';
 
 export function useChat(conversationId: string | null) {
   // Safe way to get user from localStorage
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   
   useEffect(() => {
     try {
@@ -32,6 +32,34 @@ export function useChat(conversationId: string | null) {
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+
+   const loadConversation = useCallback(async (id: string) => {
+    if (id === currentConversationId) return;
+
+    try {
+      setError(null);
+      
+      if (!user?.id) {
+        setError('User not found. Please refresh the page.');
+        return;
+      }
+
+      const response = await fetch(`/api/conversations/${id}?userId=${user.id}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to load conversation');
+      }
+
+      const conversation = await response.json();
+      setMessages(conversation.messages || []);
+      setCurrentConversationId(id); // ✅ Update current conversation ID
+      setInput('');
+      
+    } catch (error) {
+      console.error('Error loading conversation:', error);
+      setError('Failed to load conversation. Please try again.');
+    }
+  }, [currentConversationId, user?.id]);
 
   // ✅ Auto-load conversations when user becomes available
   const loadUserConversations = useCallback(async () => {
@@ -62,42 +90,15 @@ export function useChat(conversationId: string | null) {
       setError('Failed to load conversations. Please try again.');
       return [];
     }
-  }, [user?.id, currentConversationId]);
+  }, [user?.id, currentConversationId, loadConversation]);
 
   // ✅ Auto-load conversations when user is available
   useEffect(() => {
     if (user?.id) {
       loadUserConversations();
     }
-  }, [user?.id]); // Don't include loadUserConversations to avoid infinite loop
+  }, [loadUserConversations, user?.id]); // Don't include loadUserConversations to avoid infinite loop
 
-  const loadConversation = useCallback(async (id: string) => {
-    if (id === currentConversationId) return;
-
-    try {
-      setError(null);
-      
-      if (!user?.id) {
-        setError('User not found. Please refresh the page.');
-        return;
-      }
-
-      const response = await fetch(`/api/conversations/${id}?userId=${user.id}`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to load conversation');
-      }
-
-      const conversation = await response.json();
-      setMessages(conversation.messages || []);
-      setCurrentConversationId(id); // ✅ Update current conversation ID
-      setInput('');
-      
-    } catch (error) {
-      console.error('Error loading conversation:', error);
-      setError('Failed to load conversation. Please try again.');
-    }
-  }, [currentConversationId, user?.id]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInput(e.target.value);

@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       return new NextResponse('Invalid JSON in request body', { status: 400 });
     }
 
-    const { messages, conversationId, userId } = requestBody;
+    const { messages, userId } = requestBody;
     
     // Input validation
     if (!userId) {
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
         
     // Add memory context to system message
     const memoryContext = memories.length > 0 
-      ? `Here's some relevant context from previous conversations: ${memories.map((m: any) => m.text).join('\n')}` 
+      ? `Here's some relevant context from previous conversations: ${memories.map((m: Memory) => m.text).join('\n')}` 
       : 'No previous context available.';
     
       console.log('memoryContext', memoryContext);

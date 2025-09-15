@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { Send, Paperclip, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Attachment } from "@/types";
+import { Attachment,UploadResult,UploadedFile } from "@/types";
 import { LargeTextModal } from "./large-text-modal";
 
 interface ChatInputProps {
@@ -157,7 +157,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
     }
   };
 
-  const uploadFilesToCloudinary = async (files: File[]) => {
+  const uploadFilesToCloudinary = async (files: File[]): Promise<UploadResult> => {
     const formData = new FormData();
 
     files.forEach((file) => {
@@ -174,7 +174,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
         throw new Error(`Upload failed: ${response.status}`);
       }
 
-      const result = await response.json();
+      const result: UploadResult = await response.json();
       return result;
     } catch (error) {
       console.error("Error uploading to Cloudinary:", error);
@@ -208,7 +208,7 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
         return prev.map((attachment) => {
           if (uploadingIds.includes(attachment.id)) {
             const successfulUpload = uploadResult.successful.find(
-              (upload: any) => upload.originalName === attachment.name
+              (upload: UploadedFile) => upload.originalName === attachment.name
             );
 
             if (successfulUpload) {

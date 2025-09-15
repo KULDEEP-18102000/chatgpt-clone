@@ -82,42 +82,42 @@ export function validateEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-export function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  wait: number,
-  immediate?: boolean
-): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout | null;
+// export function debounce<T extends (...args: any[]) => any>(
+//   func: T,
+//   wait: number,
+//   immediate?: boolean
+// ): (...args: Parameters<T>) => void {
+//   let timeout: NodeJS.Timeout | null;
   
-  return function executedFunction(...args: Parameters<T>) {
-    const later = () => {
-      timeout = null;
-      if (!immediate) func(...args);
-    };
+//   return function executedFunction(...args: Parameters<T>) {
+//     const later = () => {
+//       timeout = null;
+//       if (!immediate) func(...args);
+//     };
     
-    const callNow = immediate && !timeout;
+//     const callNow = immediate && !timeout;
     
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+//     if (timeout) clearTimeout(timeout);
+//     timeout = setTimeout(later, wait);
     
-    if (callNow) func(...args);
-  };
-}
+//     if (callNow) func(...args);
+//   };
+// }
 
-export function throttle<T extends (...args: any[]) => any>(
-  func: T,
-  limit: number
-): (...args: Parameters<T>) => void {
-  let inThrottle: boolean;
+// export function throttle<T extends (...args: any[]) => any>(
+//   func: T,
+//   limit: number
+// ): (...args: Parameters<T>) => void {
+//   let inThrottle: boolean;
   
-  return function executedFunction(...args: Parameters<T>) {
-    if (!inThrottle) {
-      func(...args);
-      inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
-    }
-  };
-}
+//   return function executedFunction(...args: Parameters<T>) {
+//     if (!inThrottle) {
+//       func(...args);
+//       inThrottle = true;
+//       setTimeout(() => inThrottle = false, limit);
+//     }
+//   };
+// }
 
 export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -170,14 +170,14 @@ export function sanitizeInput(input: string): string {
   return input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 }
 
-export function isValidUrl(string: string): boolean {
-  try {
-    new URL(string);
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
+// export function isValidUrl(string: string): boolean {
+//   try {
+//     new URL(string);
+//     return true;
+//   } catch (_) {
+//     return false;
+//   }
+// }
 
 // Local storage utilities with error handling
 export function getFromLocalStorage<T>(key: string, defaultValue: T): T {

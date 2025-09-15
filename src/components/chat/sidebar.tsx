@@ -11,7 +11,7 @@ interface SidebarProps {
   onSelectConversation: (id: string) => void;
   deleteConversation: (id: string) => void;
   onNewConversation: () => void;
-  loadConversation: () => void;
+  loadUserConversations: () => void;
   isOpen: boolean;
   onToggle: () => void;
 }

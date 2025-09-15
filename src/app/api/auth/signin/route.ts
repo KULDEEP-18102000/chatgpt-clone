@@ -3,6 +3,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { signinUser } from '@/lib/db';
 
+// Type guard to check if error has message property
+function isErrorWithMessage(error: unknown): error is Error {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as Record<string, unknown>).message === 'string'
+  );
+}
+
+// Helper function to get error message safely
+function getErrorMessage(error: unknown): string {
+  if (isErrorWithMessage(error)) {
+    return error.message;
+  }
+  
+  if (typeof error === 'string') {
+    return error;
+  }
+  
+  return 'An unknown error occurred';
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -11,9 +34,9 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!email || !password) {
       return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Email and password are required' 
+        {
+          success: false,
+          message: 'Email and password are required'
         },
         { status: 400 }
       );
@@ -23,9 +46,9 @@ export async function POST(request: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Please provide a valid email address' 
+        {
+          success: false,
+          message: 'Please provide a valid email address'
         },
         { status: 400 }
       );
@@ -45,24 +68,26 @@ export async function POST(request: NextRequest) {
       }
     }, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Signin API Error:', error);
 
+    const errorMessage = getErrorMessage(error);
+
     // Handle specific error cases
-    if (error.message.includes('Invalid email or password')) {
+    if (errorMessage.includes('Invalid email or password')) {
       return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Invalid email or password' 
+        {
+          success: false,
+          message: 'Invalid email or password'
         },
         { status: 401 }
       );
     }
 
     return NextResponse.json(
-      { 
-        success: false, 
-        message: 'Failed to sign in. Please try again.' 
+      {
+        success: false,
+        message: 'Failed to sign in. Please try again.'
       },
       { status: 500 }
     );

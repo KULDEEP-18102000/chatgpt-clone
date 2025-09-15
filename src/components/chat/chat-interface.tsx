@@ -21,7 +21,6 @@ export function ChatInterface() {
     loadConversation,
     conversations,
     loadUserConversations,
-    setConversations,
     currentConversationId, // ✅ Use hook's conversation ID, not separate state
   } = useChat(null); // Start with no conversation selected
 

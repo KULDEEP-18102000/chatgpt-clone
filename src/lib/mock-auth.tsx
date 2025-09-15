@@ -53,7 +53,7 @@ export function MockAuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoaded(true);
   }, []);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string) => {
     // Mock sign-in logic - in real app, you'd validate against a database
     // For now, just create a user object
     const mockUser: MockUser = {
