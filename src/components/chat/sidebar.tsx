@@ -142,7 +142,7 @@ export function Sidebar({
           <div className="p-4">
             <Button
               onClick={onNewConversation}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors cursor-pointer"
             >
               <Plus size={16} className="mr-2" />
               New Chat
